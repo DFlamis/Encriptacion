@@ -1,5 +1,5 @@
 # Encriptacion
-Prototipo de encriptacion utilizando matrices para proyecto final de Algebra Lineal
+Prototipo de encriptación utilizando matrices para proyecto final de Algebra Lineal
 
 Universidad: Espol
 
