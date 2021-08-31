@@ -6,11 +6,17 @@ def split_massage(massage):
 
     mini_massage = []
 
+    micro_massage = []
+
     massage_size = len(massage)
 
     for n in massage:
         size = len(mini_massage)
-        mini_massage.append(n)
+        #mini_massage.append(n)
+
+        micro_massage.append(n)
+        mini_massage.append(micro_massage)
+        micro_massage = []
 
         if size == 3:
             massage_size = massage_size - 4
@@ -21,8 +27,13 @@ def split_massage(massage):
         new_number = 4 - len(mini_massage)
         j = 0
         while(j < new_number):
-            mini_massage.append(' ')
+            #mini_massage.append(' ')
+            
+            micro_massage.append(' ')
+            mini_massage.append(micro_massage)
+            
             j = j + 1
+            micro_massage = []
         entire_mini_massage.append(mini_massage)
     
     return entire_mini_massage
@@ -30,7 +41,7 @@ def split_massage(massage):
 def translate(splitted_massage):
     for n in splitted_massage:
         for m in range(4):
-            n[m] = sub_translate(n[m])
+            n[m][0] = sub_translate(n[m][0])
 
     return splitted_massage
 
@@ -95,16 +106,29 @@ def sub_translate(m):
     return m
 
 def encrypt_massage(translated_massage):
-    encrypt_matrix = np.array([[3,1,-5,1],[6,1,2,4],[3,4,5,1],[2,8,9,5]])
-    encrypted_massage = np.dot(translated_massage,encrypt_matrix)
+        
+    new_massage_helper = []
 
-    return just_numbers(encrypted_massage),encrypt_matrix
+    encrypt_matrix = np.array([[3,1,-5,1],[6,1,2,4],[3,4,5,1],[2,8,9,5]])
+
+
+    for n in translated_massage:
+        mini_massage_helper = np.array(n)
+        encrypted_massage = np.dot(encrypt_matrix,mini_massage_helper)
+        new_massage_helper.append(encrypted_massage)
+        
+
+    #encrypt_matrix = np.array([[3,1,-5,1],[6,1,2,4],[3,4,5,1],[2,8,9,5]])
+    #encrypted_massage = np.dot(translated_massage,encrypt_matrix)
+
+    #return just_numbers(encrypted_massage),encrypt_matrix
+    return just_numbers(new_massage_helper),encrypt_matrix
 
 def just_numbers(encrypted_massage):
     code = ''
     for n in encrypted_massage:
         for m in n:
-            code = code + ','+str(m)
+            code = code + ','+str(m[0])
     
     return code[1:]
 
@@ -116,11 +140,19 @@ def split_massage_received(massage_received):
 
     mini_massage = []
 
+    micro_massage = []
+
     massage_size = len(code)
 
     for n in code:
         size = len(mini_massage)
-        mini_massage.append(int(n))
+        micro_massage.append(int(n))
+        
+        #mini_massage.append(int(n))
+
+        mini_massage.append(micro_massage)
+        micro_massage = []
+
 
         if size == 3:
             massage_size = massage_size - 4
@@ -134,16 +166,23 @@ def descrypt_massage(received_splitted_massage,encrypt_matrix):
 
 #    key_matrix = np.array([[0.0294,0.0882,0.2059,-0.1176],[0.1691,-0.1593,0.1005,0.0735],[-0.1507,0.0478,0.0699,-0.0221],[-0.0110,0.1336,-0.3689,0.1692]])
 
+    new_massage_helper = []
+
     key_matrix = np.linalg.inv(encrypt_matrix)
 
-    descrypted_massage = np.dot(received_splitted_massage,key_matrix)
+    #descrypted_massage = np.dot(received_splitted_massage,key_matrix)
+
+    for n in received_splitted_massage:
+        mini_massage_helper = np.array(n)
+        descrypted_massage = np.dot(key_matrix,mini_massage_helper)
+        new_massage_helper.append(descrypted_massage)
 
     secret_massage = []
     mini_secret_massage = []
 
-    for o in descrypted_massage:
+    for o in new_massage_helper:
         for p in range(4):
-            mini_secret_massage.append(round(float(o[p])))
+            mini_secret_massage.append(round(float(o[p][0])))
         secret_massage.append(mini_secret_massage)
         mini_secret_massage = []
 
@@ -217,4 +256,3 @@ def reverse_sub_translate(m):
         return 'y'
     elif m == 27:
         return 'z'
-    
