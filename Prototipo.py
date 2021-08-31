@@ -1,6 +1,8 @@
 import numpy as np
 import Funciones as fn
 
+#Prototipo de Algebra Lineal
+
 massage = input('Ingrese el mensaje que desea encriptar: ')
 
 splitted_massage = fn.split_massage(massage)
